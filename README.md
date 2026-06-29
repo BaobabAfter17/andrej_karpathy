@@ -20,7 +20,7 @@ and solve the exercises. The goal is a first-principles understanding of how neu
   every gradient **verified against `torch`**.
 
 ### `makemore/` — a character-level language model
-Built up over four parts, each with worked exercises (`exNN.ipynb`):
+Built up over five parts, each with worked exercises (`exNN.ipynb`):
 
 - **`part1_bigram/`** — The *same* bigram model built two ways:
   - **Statistical**: a 27×27 count matrix normalized into distributions, sampled with
@@ -36,7 +36,25 @@ Built up over four parts, each with worked exercises (`exNN.ipynb`):
   preceding `Linear` at inference and connect the `Linear` gradients to Nielsen's BP1–BP4.
 - **`part4_backprop/`** — **Manual backpropagation** through the entire MLP — every intermediate
   gradient (cross-entropy, BatchNorm, matmuls, the embedding lookup) derived by hand and
-  **cross-checked against PyTorch autograd** (Exercise 1 complete).
+  **cross-checked against PyTorch autograd**. `dhprebn_derivation.md` works out the one-shot
+  BatchNorm gradient (the math behind Exercise 2).
+- **`part5_WavNet/`** — A hierarchical, **WaveNet**-style model that fuses characters in stages
+  via a custom `FlattenConsecutive` layer, built on a reusable PyTorch-like module API
+  (`Linear`, `BatchNorm1d`, `Tanh`, `Embedding`, `Sequential`) — making the network *deeper* and
+  *tree-structured* rather than wider.
+
+### `gpt/` — building a GPT from scratch
+A decoder-only **Transformer** trained on the Tiny Shakespeare corpus (`input.txt`), built up from
+a bigram baseline to the full model.
+
+- **`gpt-dev.ipynb`** — The working notebook: develops the **self-attention** mechanism from first
+  principles (the averaging-as-matrix-multiply trick → masked, scaled dot-product attention).
+- **`bigram.py`** — The starting-point baseline: a token-embedding bigram language model with a
+  training loop and sampling.
+- **`v2.py`** — The full **GPT**: token + position embeddings, **multi-head self-attention**, a
+  **feed-forward** layer, stacked **Transformer blocks** with **residual connections** and
+  **LayerNorm**, plus **dropout** — scaled up (`n_embd=384`, 6 heads, 6 layers, `block_size=256`)
+  to generate Shakespeare-like text.
 
 ## Key concepts
 
@@ -45,7 +63,9 @@ softmax & cross-entropy derived by hand · verifying custom gradients against Py
 maximum-likelihood estimation · a statistical model recast as an equivalent neural net ·
 broadcasting & matrix shapes · regularization as smoothing · character embeddings & the MLP
 language model · weight initialization · BatchNorm · activation/gradient diagnostics ·
-manual backprop through a full network.
+manual backprop through a full network · hierarchical/WaveNet-style models · self-attention &
+scaled dot-product attention · multi-head attention · Transformer blocks · residual connections ·
+LayerNorm · dropout · decoder-only GPT language model.
 
 ## Running it
 
@@ -63,9 +83,9 @@ jupyter notebook                   # open any .ipynb and run top-to-bottom
 - [x] **makemore (bigram)** — statistical + single-layer neural model
 - [x] **makemore (MLP)** — Bengio-style embedding + hidden-layer model
 - [x] **makemore (MLP2)** — initialization, BatchNorm, diagnostics
-- [~] **makemore (backprop)** — manual backprop through the whole net (Ex. 1 done)
-- [ ] **makemore** — WaveNet
-- [ ] **Building GPT** — self-attention and the Transformer from scratch
+- [x] **makemore (backprop)** — manual backprop through the whole net
+- [x] **makemore (WaveNet)** — hierarchical model with `FlattenConsecutive`
+- [x] **Building GPT** — self-attention and the Transformer from scratch
 - [ ] **Tokenization (minBPE)** & **GPT-2**
 
 ---
